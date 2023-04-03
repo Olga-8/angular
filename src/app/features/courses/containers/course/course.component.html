@@ -1,0 +1,229 @@
+<div class="wrap" style="min-height: calc(100vh - 177px)">
+  <div class="card mx-3 my-5">
+    <div class="card-header">
+      <h3 class="card-title">
+        {{ isEditForm ? "Edit course" : "New course" }}
+      </h3>
+    </div>
+
+    <form class="p-3" [formGroup]="courseForm" (ngSubmit)="onSave()">
+      <div class="mb-3">
+        <label for="inputTitle" class="form-label">Title:</label>
+        <div id="titleHelp" class="form-text" style="float: right">
+          *required
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          id="inputTitle"
+          aria-describedby="titleHelp"
+          placeholder="Some title..."
+          formControlName="courseName"
+          [ngClass]="{
+            'has-error':
+              (courseForm.get('courseName')?.touched ||
+                courseForm.get('courseName')?.dirty) &&
+              !courseForm.get('courseName')?.valid
+          }"
+        />
+
+        <span
+          class="help-block"
+          *ngIf="
+            (courseForm.get('courseName')?.touched ||
+              courseForm.get('courseName')?.dirty) &&
+            !courseForm.get('courseName')?.valid
+          "
+        >
+          <span *ngIf="courseForm.get('courseName')?.hasError('required')">
+            Title is required
+          </span>
+          <span *ngIf="courseForm.get('courseName')?.hasError('maxlength')">
+            Title must be less than 50 characters
+          </span>
+        </span>
+      </div>
+
+      <div class="mb-3">
+        <label for="inputDescr" class="form-label">Description:</label>
+        <div id="descrHelp" class="form-text" style="float: right">
+          *required
+        </div>
+        <textarea
+          class="form-control"
+          aria-label="With textarea"
+          aria-describedby="descrHelp"
+          id="inputDescr"
+          formControlName="courseDescr"
+          [ngClass]="{
+            'has-error':
+              (courseForm.get('courseDescr')?.touched ||
+                courseForm.get('courseDescr')?.dirty) &&
+              !courseForm.get('courseDescr')?.valid
+          }"
+          name="inputDescr"
+        >
+Description...
+        </textarea>
+
+        <span
+          class="help-block"
+          *ngIf="
+            (courseForm.get('courseDescr')?.touched ||
+              courseForm.get('courseDescr')?.dirty) &&
+            !courseForm.get('courseDescr')?.valid
+          "
+        >
+          <span *ngIf="courseForm.get('courseDescr')?.hasError('required')">
+            Description is required
+          </span>
+          <span *ngIf="courseForm.get('courseDescr')?.hasError('maxlength')">
+            Description must be less than 50 characters
+          </span>
+        </span>
+      </div>
+
+      <div class="mb-3" style="width: 200px">
+        <label for="inputDuration" class="form-label">Duration:</label>
+        <div id="numberHelp" class="form-text" style="float: right">
+          *required
+        </div>
+        <input
+          type="number"
+          class="form-control"
+          id="inputDuration"
+          formControlName="courseDuration"
+          [ngClass]="{
+            'has-error':
+              (courseForm.get('courseDuration')?.touched ||
+                courseForm.get('courseDuration')?.dirty) &&
+              !courseForm.get('courseDuration')?.valid
+          }"
+          aria-describedby="numberHelp"
+          value="0"
+          name="inputDuration"
+        />
+
+        <span
+          class="help-block"
+          *ngIf="
+            (courseForm.get('courseDuration')?.touched ||
+              courseForm.get('courseDuration')?.dirty) &&
+            !courseForm.get('courseDuration')?.valid
+          "
+        >
+          <span *ngIf="courseForm.get('courseDuration')?.hasError('required')">
+            Duration is required
+          </span>
+          <span *ngIf="courseForm.get('courseDuration')?.hasError('min')">
+            Duration must be greater than 0
+          </span>
+          <span *ngIf="courseForm.get('courseDuration')?.hasError('max')">
+            Duration must be less than 600
+          </span>
+        </span>
+      </div>
+
+      <div class="mb-3" style="width: 200px">
+        <label for="imputDate" class="form-label">Date:</label>
+        <div id="dateHelp" class="form-text" style="float: right">
+          *required
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          id="inputDate"
+          formControlName="courseDate"
+          [ngClass]="{
+            'has-error':
+              (courseForm.get('courseDate')?.touched ||
+                courseForm.get('courseDate')?.dirty) &&
+              !courseForm.get('courseDate')?.valid
+          }"
+          aria-describedby="dateHelp"
+          placeholder="03.23.23"
+          name="inputDate"
+        />
+
+        <span
+          class="help-block"
+          *ngIf="
+            (courseForm.get('courseDate')?.touched ||
+              courseForm.get('courseDate')?.dirty) &&
+            !courseForm.get('courseDate')?.valid
+          "
+        >
+          <span *ngIf="courseForm.get('courseDate')?.hasError('required')">
+            Date is required
+          </span>
+          <span
+            *ngIf="
+              courseForm.get('courseDate')?.hasError('courseDateValidator')
+            "
+          >
+            Date must be in format MM/DD/YY
+          </span>
+        </span>
+      </div>
+
+      <div class="mb-3">
+        <label for="inputGroupSelect01">Autors:</label>
+        <div id="autorsHelp" class="form-text" style="float: right">
+          *required
+        </div>
+
+        <select
+          class="form-select"
+          id="inputGroupSelectAutor"
+          formControlName="courseAutor"
+          [ngClass]="{
+            'has-error':
+              (courseForm.get('courseAutor')?.touched ||
+                courseForm.get('courseAutor')?.dirty) &&
+              !courseForm.get('courseAutor')?.valid
+          }"
+          name="inputGroupSelectAutor"
+        >
+          <option value="" disabled selecte>Autors...</option>
+          <option [value]="autor" *ngFor="let autor of autors">
+            {{ autor }}
+          </option>
+        </select>
+
+        <span
+          class="help-block"
+          *ngIf="
+            (courseForm.get('courseAutor')?.touched ||
+              courseForm.get('courseAutor')?.dirty) &&
+            !courseForm.get('courseAutor')?.valid
+          "
+        >
+          <span *ngIf="courseForm.get('courseAutor')?.hasError('required')">
+            Autor is required
+          </span>
+        </span>
+      </div>
+
+      <button
+        type="submit"
+        class="btn m-1 px-3 btn-secondary"
+        style="float: right"
+        [disabled]="!courseForm.valid"
+      >
+        {{ isEditForm ? "Edit and Save" : "Save" }}
+      </button>
+
+      <button
+        type="reset"
+        class="btn m-1 px-3"
+        routerLink="/courses"
+        style="color: black; background-color: rgb(212, 212, 212); float: right"
+      >
+        Cancel
+      </button>
+    </form>
+  </div>
+</div>
+
+
+  

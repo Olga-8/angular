@@ -1,0 +1,83 @@
+<ng-container *ngIf="filteredCourses.length > 0 || !filter.touched">
+  <div class="d-flex flex-column" style="min-height: calc(100vh - 129px)">
+    <div class="mt-4" style="width: 100%">
+      <div class="input-group m-4 d-flex align-items-center" style="width: 400px">
+        <img src="../../../../../assets/seach-icon.png" alt="Search" style="
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            z-index: 100;
+            align-items: center;
+          " class="m-1" />
+        <input [formControl]="filter" type="text" class="form-control px-5" placeholder="Search..." />
+      </div>
+
+      <!-- <div *ngIf="filteredCourses.length === 0 && filter.touched && filter.dirty" class="mt-2 px-1"
+                style="display: block; width: 100%">
+                Courses not found
+            </div> -->
+
+      <div class="m-3 d-flex justify-content-end">
+        <button type="button" class="btn btn-primary" routerLink="/courses/add">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg"
+            viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+              d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z" />
+          </svg>Add courses
+        </button>
+      </div>
+    </div>
+
+    <div class="card mx-3 mb-3">
+      <div class="card-header">List of courses:</div>
+
+      <ul class="list-group list-group-flush">
+        <!-- <ng-container *ngIf="filteredCourses.length > 0; else defaultList">
+                    <app-courses-list-item 
+                        *ngFor="let course of filteredCourses" 
+                        [course]="course"
+                        (deleteCourse)="deleteCourse($event)">
+                    </app-courses-list-item>
+                </ng-container>
+    
+                <ng-template #defaultList>
+                    <app-courses-list-item 
+                        appHighlighting
+                        [appHighlighting]="course.date"
+                        *ngFor="let course of courses" 
+                        [course]="course"
+                        (deleteCourse)="deleteCourse($event)">
+                    </app-courses-list-item>
+                </ng-template>   -->
+
+        <app-courses-list-item *ngFor="let course of filteredCourses || courses" [course]="course"
+          (deleteCourse)="deleteCourse($event)" appHighlighting [appHighlighting]="course.date">
+        </app-courses-list-item>
+      </ul>
+
+      <div class="list-group-item d-flex justify-content-center" *ngIf="!isCoursesFill">
+        <button type="button" class="btn btn-primary m-2 text-uppercase p-2" style="float: right; color: white"
+          (click)="load()">
+          load more
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="filteredCourses.length === 0 && filter.touched && filter.dirty">
+  <div class="d-flex flex-column align-items-center justify-content-center m-1 p-2" style="
+      width: 100%;
+      min-height: calc(100vh - 175px);
+      font-size: 30px;
+      font-weight: 500;
+    ">
+    <p>Courses not found</p>
+    <div class="list-group-item d-flex justify-content-center">
+      <a href="#" type="button" class="btn btn-primary m-2 text-uppercase p-2"
+        style="float: right; color: white">Back</a>
+    </div>
+  </div>
+</ng-container>
+
+
+

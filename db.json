@@ -1,0 +1,56 @@
+{
+  "courses": [
+    {
+      "name": "JavaScript",
+      "description": "Have a good day!!!",
+      "duration": 104,
+      "date": "2000-03-27",
+      "lector": "Morozova",
+      "id": 1
+    },
+    {
+      "id": 2,
+      "name": "C#",
+      "lector": "Shevchenko",
+      "duration": 120,
+      "date": "2023-03-15",
+      "extraComment": false,
+      "comment": "Good course",
+      "description": "learn Angular"
+    },
+    {
+      "id": 3,
+      "name": "C++",
+      "lector": "Kasparov",
+      "duration": 20,
+      "date": "2021-08-01",
+      "extraComment": false,
+      "comment": "Good course",
+      "description": "learn JavaScript"
+    },
+    {
+      "name": "Python",
+      "description": "don't give up",
+      "duration": 450,
+      "date": "2019-07-17",
+      "lector": "Bach",
+      "id": 4
+    },
+    {
+      "name": "xxx11",
+      "description": "xx",
+      "duration": 1,
+      "date": "2023-03-23",
+      "lector": "Petrenko",
+      "id": 5
+    },
+    {
+      "name": "Angular",
+      "description": "xc",
+      "duration": 1,
+      "date": "2023-03-23",
+      "lector": "Bach",
+      "id": 6
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+input.ng-valid.ng-touched {
+  border: 2px solid rgb(0, 194, 0);
+  background-color: rgba(22, 213, 101, 0.083);
+}
+
+textarea.ng-valid.ng-touched {
+  border: 2px solid rgb(0, 194, 0);
+  background-color: rgba(22, 213, 101, 0.083);
+}
+
+.has-error {
+  border: 2px solid rgb(208, 4, 4);
+    background-color: rgba(255, 0, 0, 0.083);
+}
