@@ -9,18 +9,21 @@ import {
 import { CustomValidators } from 'src/app/core/validators/custom.validators';
 import { Course } from 'src/app/features/courses/containers/courses/course.model';
 import { CoursesService } from 'src/app/features/courses/containers/courses/courses.service';
-import { takeUntil, tap } from 'rxjs/operators';
+import { map, takeUntil, tap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-
+import { LoaderService } from 'src/app/shared/services/loader.service';
+import { of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-course',
   templateUrl: './course.component.html',
   styleUrls: ['./course.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CourseComponent implements OnInit, OnDestroy {
   courseForm!: FormGroup;
@@ -36,14 +39,25 @@ export class CourseComponent implements OnInit, OnDestroy {
   ];
   destroy$: Subject<boolean> = new Subject();
 
+  loader$!: Observable<boolean>;
+  id!: number;
+  course$!: Observable<Course>;
+  courses!: Course;
+
   constructor(
     private fb: FormBuilder,
     private courseService: CoursesService,
     private router: Router,
     private ActivatedRoute: ActivatedRoute,
-  ) {}
+    public LoaderService: LoaderService
+  ) {
+    this.loader$ = this.LoaderService.isActiveLoader$$;
+  }
 
   ngOnInit() {
+    this.id = this.ActivatedRoute.snapshot.params['id'];
+   
+
     this.buildForm();
     this.checkIsEditForm();
   }
@@ -87,14 +101,18 @@ export class CourseComponent implements OnInit, OnDestroy {
     if (this.isEditForm) {
       this.courseService
         .editCourse({ ...course, id: this.courseId })
-        .pipe(tap(() => this.router.navigate(['/courses'])),
-        takeUntil(this.destroy$))
-        .subscribe()
+        .pipe(
+          tap(() => this.router.navigate(['/courses'])),
+          takeUntil(this.destroy$)
+        )
+        .subscribe();
     } else {
       this.courseService
         .addCourse(course)
-        .pipe(tap(() => this.router.navigate(['/courses'])),
-        takeUntil(this.destroy$))
+        .pipe(
+          tap(() => this.router.navigate(['/courses'])),
+          takeUntil(this.destroy$)
+        )
         .subscribe();
     }
   }
@@ -108,29 +126,27 @@ export class CourseComponent implements OnInit, OnDestroy {
 
   checkIsEditForm(): void {
     if (this.ActivatedRoute.snapshot.params['id']) {
+      // console.log(this.ActivatedRoute.snapshot.params['id']);
       this.isEditForm = true;
       this.courseId = this.ActivatedRoute.snapshot.params['id'];
-      this.courseService
-        .getCourseById(this.courseId)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((course: Course) => {
-          this.courseForm.setValue({
-            courseName: course.name,
-            courseDescr: course.description,
-            courseDuration: course.duration,
-            // courseDate: course.date,
-            courseDate: this.dataTransformToMMDDYY(course.date),
-            courseAutor: course.lector,
-          });
+      this.ActivatedRoute.data.subscribe((data) => {
+        console.log(data['feature']);
+        this.courseForm.setValue({
+          courseName: data['feature'].name,
+          courseDescr: data['feature'].description,
+          courseDuration: data['feature'].duration,
+          // courseDate: data['date'],
+          courseDate: this.dataTransformToMMDDYY(data['feature'].date),
+          courseAutor: data['feature'].lector,
         });
+      });
     }
   }
 
   dataTransformToMMDDYY(date: string): string {
+    console.log(date);
     const [year, month, day] = date.split('-');
     const yy = year.slice(2);
     return `${month}/${day}/${yy}`;
   }
-
-
 }

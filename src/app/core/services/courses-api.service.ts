@@ -12,10 +12,10 @@ export class CoursesApiService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getCoursesLimit(): Observable<Course[]> {
+  getCoursesAll(): Observable<Course[]> {
     return this.httpClient
       .get<Course[]>(`${this.BASE_API}/courses`)
-      .pipe(delay(1000));
+      
   }
 
   getCourses(start: number, limit: number): Observable<Course[]> {
@@ -25,7 +25,8 @@ export class CoursesApiService {
     params = params.append('_start', start);
     params = params.append('_limit', limit);
     
-    return this.httpClient.get<Course[]>(`${this.BASE_API}/courses`, { params });
+    return this.httpClient.get<Course[]>(`${this.BASE_API}/courses`, { params })
+    .pipe(delay(1000));
   }
   
 

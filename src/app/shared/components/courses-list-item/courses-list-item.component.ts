@@ -9,23 +9,17 @@ import { ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-courses-list-item',
   templateUrl: './courses-list-item.component.html',
   styleUrls: ['./courses-list-item.component.scss'],
-  
-  changeDetection: ChangeDetectionStrategy.OnPush
 
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoursesListItemComponent {
-
-  @Input() 
+  @Input()
   course!: Course;
 
-
-  @Output() 
+  @Output()
   deleteCourse: EventEmitter<number> = new EventEmitter<number>();
-
 
   delete(): void {
     this.deleteCourse.emit(this.course.id);
   }
-
-
 }

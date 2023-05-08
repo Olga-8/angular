@@ -10,6 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { LoaderService } from 'src/app/shared/services/loader.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-courses',
@@ -20,19 +21,47 @@ import { LoaderService } from 'src/app/shared/services/loader.service';
 export class CoursesComponent implements OnInit, OnDestroy {
   courses!: Course[];
   destroy$: Subject<boolean> = new Subject();
-
   filteredCourses: Course[] = [];
   filter: FormControl = new FormControl<string>('');
-
   params = { start: 0, limit: 4 };
   coursesLength: number = 0;
   isCoursesFill = false;
+  isLoading$ = this.LoaderService.isActiveLoader$$;
+  courses$: Observable<Course[]>;
 
   constructor(
     private courseService: CoursesService,
     private changeDetectorRef: ChangeDetectorRef,
     public LoaderService: LoaderService
   ) {
+    this.courses$ = this.courseService.getCoursesAll();
+    // this.isLoading$ = of(true);
+    // this.courseService
+    //   .getCourses(this.params.start, this.params.limit)
+    //   .pipe(
+    //     // finalize(() => {
+    //     //   this.isLoading$ = of(false);
+    //     // }),
+    //     takeUntil(this.destroy$)
+    //   )
+    //   .subscribe((courses: Course[]) => {
+    //     this.courses = courses;
+    //     this.filteredCourses = courses;
+    //     this.changeDetectorRef.detectChanges();
+    //   });
+  }
+
+  ngOnInit() {
+    this.getCourses();
+
+    this.courseService
+      .getCoursesAll()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((courses: Course[]) => {
+        this.coursesLength = courses.length;
+        this.changeDetectorRef.detectChanges();
+      });
+
     this.filter.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -43,18 +72,6 @@ export class CoursesComponent implements OnInit, OnDestroy {
             return true;
           }
         });
-      });
-  }
-
-  ngOnInit() {
-    this.getCourses();
-
-    this.courseService
-      .getCoursesLimit()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((courses: Course[]) => {
-        this.coursesLength = courses.length;
-        this.changeDetectorRef.detectChanges();
       });
   }
 
@@ -82,10 +99,10 @@ export class CoursesComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.getCourses();
       });
+
   }
 
   load(): void {
-    console.log('load more');
     this.params.start += this.params.limit;
     this.courseService
       .getCourses(this.params.start, this.params.limit)
@@ -93,10 +110,10 @@ export class CoursesComponent implements OnInit, OnDestroy {
       .subscribe((courses: Course[]) => {
         this.courses = this.courses.concat(courses);
         this.filteredCourses = this.courses;
+
         if (this.courses.length >= this.coursesLength) {
           this.isCoursesFill = true;
         }
-
         this.changeDetectorRef.detectChanges();
       });
   }
